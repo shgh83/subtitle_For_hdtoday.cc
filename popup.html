@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Video Subtitler</title>
+    <style>
+      body {
+        width: 350px;
+        padding: 10px;
+        font-family: Arial, sans-serif;
+      }
+      #videoList, #message {
+        margin: 10px 0;
+      }
+      .video-item {
+        margin: 5px 0;
+        padding: 5px;
+        border: 1px solid #ccc;
+      }
+      input[type="file"] {
+        margin: 5px 0;
+      }
+      button {
+        padding: 5px;
+        margin: 5px 0;
+      }
+      .error {
+        color: red;
+      }
+      .success {
+        color: green;
+      }
+    </style>
+  </head>
+  <body>
+    <h3>Video Subtitler</h3>
+    <input type="file" id="srtFile" accept=".srt">
+    <div id="videoList"></div>
+    <button id="togglePiP" disabled>Toggle PiP</button>
+    <button id="clearSubtitles">Clear Subtitles</button>
+    <div id="message"></div>
+    <script src="popup.js"></script>
+  </body>
+</html>

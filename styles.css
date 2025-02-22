@@ -1,0 +1,14 @@
+.video-subtitle {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  text-align: center;
+  padding: 10px;
+  font-size: 16px;
+  font-family: Arial, sans-serif;
+  z-index: 2147483647;
+  pointer-events: none;
+  display: none;
+  box-sizing: border-box;
+  overflow-wrap: break-word;
+}
