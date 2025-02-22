@@ -4,24 +4,33 @@
     <title>Video Subtitler</title>
     <style>
       body {
-        width: 350px;
+        width: 400px;
         padding: 10px;
         font-family: Arial, sans-serif;
       }
-      #videoList, #message {
+      #videoList, #downloadList, #message {
         margin: 10px 0;
       }
-      .video-item {
+      .video-item, .download-item {
         margin: 5px 0;
         padding: 5px;
         border: 1px solid #ccc;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
       }
-      input[type="file"] {
+      input[type="file"], select, input[type="number"], input[type="color"] {
         margin: 5px 0;
+        width: 100%;
       }
       button {
         padding: 5px;
-        margin: 5px 0;
+        margin: 5px 2px;
+        width: 48%;
+      }
+      .video-buttons button, .download-buttons button {
+        width: auto;
+        margin: 0 5px;
       }
       .error {
         color: red;
@@ -29,12 +38,92 @@
       .success {
         color: green;
       }
+      .settings {
+        margin-top: 10px;
+        padding: 10px;
+        border: 1px solid #ddd;
+      }
+      label {
+        display: block;
+        margin: 5px 0;
+      }
+      .tabs {
+        display: flex;
+        margin-bottom: 10px;
+      }
+      .tab {
+        flex: 1;
+        padding: 5px;
+        text-align: center;
+        cursor: pointer;
+        background-color: #f0f0f0;
+        border: 1px solid #ccc;
+      }
+      .tab.active {
+        background-color: #ddd;
+        font-weight: bold;
+      }
+      #videoTabContent, #downloadTabContent {
+        display: none;
+      }
+      #videoTabContent.active, #downloadTabContent.active {
+        display: block;
+      }
     </style>
   </head>
   <body>
     <h3>Video Subtitler</h3>
+    <button id="searchVideos">Refresh/Search Videos</button>
     <input type="file" id="srtFile" accept=".srt">
-    <div id="videoList"></div>
+
+    <div class="tabs">
+      <div class="tab active" id="videoTab">Videos</div>
+      <div class="tab" id="downloadTab">Download Links</div>
+    </div>
+    <div id="videoTabContent" class="active">
+      <div id="videoList"></div>
+    </div>
+    <div id="downloadTabContent">
+      <div id="downloadList"></div>
+    </div>
+
+    <div class="settings">
+      <label>Position:
+        <select id="subtitlePosition">
+          <option value="bottom">Bottom</option>
+          <option value="middle">Middle</option>
+          <option value="top">Top</option>
+          <option value="custom">Custom</option>
+        </select>
+        <input type="number" id="customOffset" placeholder="Offset (px)" style="display: none;" min="-1000" max="1000">
+      </label>
+      <label>Font:
+        <select id="subtitleFont">
+          <option value="Arial">Arial</option>
+          <option value="Times New Roman">Times New Roman</option>
+          <option value="Verdana">Verdana</option>
+          <option value="Helvetica">Helvetica</option>
+          <option value="Courier New">Courier New</option>
+        </select>
+      </label>
+      <label>Size:
+        <input type="number" id="subtitleSize" value="16" min="10" max="50"> px
+      </label>
+      <label>Text Color:
+        <input type="color" id="subtitleColor" value="#ffffff">
+      </label>
+      <label>Background Color:
+        <input type="color" id="subtitleBgColor" value="#000000">
+      </label>
+      <label>Background Opacity:
+        <input type="number" id="subtitleBgOpacity" value="0.7" min="0" max="1" step="0.1">
+      </label>
+      <label>Delay (seconds):
+        <input type="number" id="subtitleDelay" value="0" step="0.1">
+      </label>
+      <button id="applySettings">Apply Settings</button>
+    </div>
+
     <button id="togglePiP" disabled>Toggle PiP</button>
     <button id="clearSubtitles">Clear Subtitles</button>
     <div id="message"></div>
