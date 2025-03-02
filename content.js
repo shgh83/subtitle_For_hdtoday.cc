@@ -541,12 +541,39 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   videos.forEach(setupVideoEvents);
 
   if (message.action === "loadSubtitles" && message.videoIndex !== undefined) {
-    // ... (existing loadSubtitles logic)
-  } else if (message.action === "updateSubtitleSettings" && message.videoIndex !== undefined) {
-    // ... (existing updateSubtitleSettings logic)
+    const video = videos[message.videoIndex];
+    if (video) {
+      const state = createSubtitleElement(video);
+      state.subtitles = message.subtitles;
+      updateSubtitle(video);
+      sendResponse({ success: true });
+    } else {
+      sendResponse({ success: false });
+    }
   } else if (message.action === "togglePiP") {
-    // ... (existing togglePiP logic)
+    const activeVideo = videos.find(v => videoStates.get(v)?.subtitles.length > 0);
+    if (activeVideo) {
+      if (activeVideo.tagName) {
+        if (document.pictureInPictureElement) {
+          document.exitPictureInPicture();
+        } else {
+          activeVideo.requestPictureInPicture();
+        }
+      } else {
+        if (activeVideo.getState() === 'pictureInPicture') {
+          activeVideo.exitPictureInPicture();
+        } else {
+          activeVideo.enterPictureInPicture();
+        }
+      }
+    }
   } else if (message.action === "clearSubtitles") {
-    // ... (existing clearSubtitles logic)
+    videoStates.forEach(state => {
+      state.subtitles = [];
+      state.subtitleElement.style.display = 'none';
+      clearInterval(state.updateInterval);
+      state.updateInterval = null;
+    });
+    sendResponse({ success: true });
   }
 });
