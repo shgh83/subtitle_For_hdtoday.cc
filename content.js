@@ -210,51 +210,69 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 // ... (previous code remains the same until positionSubtitle)
 
 function positionSubtitle(video) {
-  const state = videoStates.get(video);
-  if (!state || !state.subtitleElement) return;
+  const state = videoStates.get(video)
+  if (!state || !state.subtitleElement) return
 
-  const isFullscreen = document.fullscreenElement === video || video.webkitDisplayingFullscreen;
-  let container = state.parentContainer;
+  const isFullscreen = document.fullscreenElement === video || video.webkitDisplayingFullscreen
+  let container = state.parentContainer
 
-  if (state.type === 'HTML5') {
+  if (state.type === "HTML5") {
     if (isFullscreen) {
-      container = video;
+      container = video
       if (state.subtitleElement.parentNode !== container) {
-        container.appendChild(state.subtitleElement);
+        container.appendChild(state.subtitleElement)
       }
     } else if (state.subtitleElement.parentNode !== state.parentContainer) {
-      state.parentContainer.appendChild(state.subtitleElement);
+      state.parentContainer.appendChild(state.subtitleElement)
     }
   }
+  // For JW Player, keep it above jw-button-container, no reparenting needed unless in PiP
 
-  const rect = video.getBoundingClientRect();
-  const videoHeight = isFullscreen ? video.clientHeight : rect.height;
-  const videoWidth = isFullscreen ? video.clientWidth : rect.width;
+  const rect = video.getBoundingClientRect()
+  const videoHeight = isFullscreen ? video.clientHeight : rect.height
+  const videoWidth = isFullscreen ? video.clientWidth : rect.width
 
-  let topPosition;
-  switch (state.settings?.position || 'bottom') {
-    case 'top':
-      topPosition = 0;
-      break;
-    case 'middle':
-      topPosition = videoHeight / 2 - (state.settings?.size || 16) / 2;
-      break;
-    case 'custom':
-      topPosition = (state.settings?.customOffset || 0);
-      break;
-    case 'bottom':
+  let topPosition
+  switch (state.settings?.position || "bottom") {
+    case "top":
+      topPosition = 0
+      break
+    case "middle":
+      topPosition = videoHeight / 2 - (state.settings?.size || 16) / 2
+      break
+    case "custom":
+      topPosition = state.settings?.customOffset || 0
+      break
+    case "bottom":
     default:
-      topPosition = videoHeight - (state.settings?.size || 16) - 20; // Adjust for padding
+      topPosition = videoHeight - (state.settings?.size || 16) - 20 // Adjust for padding
   }
 
-  state.subtitleElement.style.position = 'absolute';
-  state.subtitleElement.style.left = `${videoWidth/2-100}px`;
-  state.subtitleElement.style.top = `${topPosition}px`;
-  state.subtitleElement.style.width = `${videoWidth}px`;
-  state.subtitleElement.style.fontFamily = state.settings?.font || 'Arial';
-  state.subtitleElement.style.fontSize = `${state.settings?.size || 16}px`;
-  state.subtitleElement.style.color = state.settings?.color || '#ffffff';
-  state.subtitleElement.style.backgroundColor = `${state.settings?.bgColor || '#000000'}${Math.round((state.settings?.bgOpacity || 0.7) * 255).toString(16).padStart(2, '0')}`;
+  // Calculate horizontal position based on settings
+  const horizontalOffset = state.settings?.horizontalOffset || 0
+  const horizontalPosition = videoWidth / 2 - (videoWidth / 2) * (horizontalOffset / 100)
+
+  state.subtitleElement.style.position = "absolute"
+  state.subtitleElement.style.left = `0px`
+  state.subtitleElement.style.top = `${topPosition}px`
+  state.subtitleElement.style.width = `${videoWidth}px`
+  state.subtitleElement.style.fontFamily = state.settings?.font || "Arial"
+  state.subtitleElement.style.fontSize = `${state.settings?.size || 16}px`
+  state.subtitleElement.style.color = state.settings?.color || "#ffffff"
+  state.subtitleElement.style.backgroundColor = `${state.settings?.bgColor || "#000000"}${Math.round(
+    (state.settings?.bgOpacity || 0.7) * 255,
+  )
+    .toString(16)
+    .padStart(2, "0")}`
+
+  // Add text alignment based on horizontal position
+  if (horizontalOffset < -10) {
+    state.subtitleElement.style.textAlign = "left"
+  } else if (horizontalOffset > 10) {
+    state.subtitleElement.style.textAlign = "right"
+  } else {
+    state.subtitleElement.style.textAlign = "center"
+  }
 }
 
 // ... (updateSubtitle and setupVideoEvents remain the same)
