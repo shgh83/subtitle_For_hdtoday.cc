@@ -336,6 +336,11 @@ function updateLanguage(lang) {
   })
 }
 
+// Add this function to update the displayed size value without changing the popup
+function updateSizeDisplay(value) {
+  document.getElementById("sizeValue").textContent = value
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   // Set default language to Farsi
   updateLanguage("fa")
@@ -390,8 +395,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Add this to the DOMContentLoaded event listener, after the opacity slider event listener
   // Range input value display for font size
-  document.getElementById("subtitleSize").addEventListener("input", (e) => {
-    document.getElementById("sizeValue").textContent = e.target.value
+  const subtitleSizeSlider = document.getElementById("subtitleSize")
+  subtitleSizeSlider.addEventListener("input", (e) => {
+    updateSizeDisplay(e.target.value)
   })
 
   // Position dropdown change
