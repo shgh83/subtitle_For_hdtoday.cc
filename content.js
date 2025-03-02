@@ -248,7 +248,7 @@ function positionSubtitle(video) {
   }
 
   state.subtitleElement.style.position = 'absolute';
-  state.subtitleElement.style.left = '0px';
+  state.subtitleElement.style.left = `${videoWidth/2-100}px`;
   state.subtitleElement.style.top = `${topPosition}px`;
   state.subtitleElement.style.width = `${videoWidth}px`;
   state.subtitleElement.style.fontFamily = state.settings?.font || 'Arial';
